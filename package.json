@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Android HP USB Printer Plugin",
   "cordova": {
-    "id": "cordova-android-toast",
+    "id": "cordova-hp-usb-printer",
     "platforms": [
       "android"
     ]

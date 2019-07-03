@@ -21,6 +21,7 @@
             </feature>
         </config-file>
 
-        <source-file src="src/android/HPUSBPrinter.java" target-dir="src/com/nikola-breznjak/android-hp-usb-printer" />
+        <source-file src="src/android/HPUSBPrinter.java" target-dir="src/com/jacob/cordova-hp-usb-printer" />
+        <lib-file src="src/libs/jpos.jar" arch="device" />
     </platform>
 </plugin>
