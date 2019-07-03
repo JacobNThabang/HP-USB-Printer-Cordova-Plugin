@@ -7,10 +7,17 @@ var USBPrinter = {
         console.log('HPUSBPrinter setup method invoked');
         exec(successCallback, errorCallback, "HPUSBPrinter", "setup", [msg]);
     },
+
     // Sent printJob.
     print: function (msg, successCallback, errorCallback) {
         console.log('HPUSBPrinter setup method invoked');
         exec(successCallback, errorCallback, "HPUSBPrinter", "print", [msg]);
+    },
+
+    // Print Image.
+    printBitmap: function (msg, successCallback, errorCallback) {
+        console.log('HPUSBPrinter setup method invoked');
+        exec(successCallback, errorCallback, "HPUSBPrinter", "printBMP", [msg]);
     },
 
     // Print a new line.

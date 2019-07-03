@@ -35,6 +35,11 @@ public class HPUSBPrinter extends CordovaPlugin implements IJPOSInitCompleteCall
             print(args.getString(0), callbackContext);
             return true;
         }
+        else if ("printBMP".equals(action)) {
+            // Print the image.
+            printBMP(args.getString(0), callbackContext);
+            return true;
+        }
         else if ("printLine".equals(action)) {
             // Print the line.
             print(args.getString(0), callbackContext);
@@ -70,6 +75,19 @@ public class HPUSBPrinter extends CordovaPlugin implements IJPOSInitCompleteCall
         // Print
         try {
             printer.printNormal(POSPrinterConst.PTR_S_RECEIPT, msg);
+            callbackContext.success("Success!");
+        } catch (JposException e) {
+            callbackContext.error(e.getLocalizedMessage().toString());
+        }
+
+    };
+
+    private void printBMP(String msg, CallbackContext callbackContext) {
+        // Print
+        int width = POSPrinterConst.PTR_BM_ASIS;
+        int alignment = POSPrinterConst.PTR_BM_CENTER;
+        try {
+            printer.printBitmap(POSPrinterConst.PTR_S_RECEIPT, msg, width, alignment);
             callbackContext.success("Success!");
         } catch (JposException e) {
             callbackContext.error(e.getLocalizedMessage().toString());
