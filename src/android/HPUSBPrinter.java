@@ -30,6 +30,11 @@ public class HPUSBPrinter extends CordovaPlugin implements IJPOSInitCompleteCall
             setup(callbackContext);
             return true;
         }
+        else if ("isDeviceEnabled".equals(action)) {
+            // Set-up the printer for use.
+            isDeviceEnabled(callbackContext);
+            return true;
+        }
         else if ("print".equals(action)) {
             // Print the line.
             print(args.getString(0), callbackContext);
@@ -58,6 +63,18 @@ public class HPUSBPrinter extends CordovaPlugin implements IJPOSInitCompleteCall
         return false;
     };
 
+    private void isDeviceEnabled(CallbackContext callbackContext) {
+        // A device must be open, claim, and DeviceEnable=true for it to be used.
+
+        try {
+            boolean printerStatus = printer.getDeviceEnabled();
+            callbackContext.success(printerStatus + "");
+        } catch (JposException e) {
+            callbackContext.error(e.getLocalizedMessage().toString());
+        }
+
+    };
+
     private void setup(CallbackContext callbackContext) {
         // A device must be open, claim, and DeviceEnable=true for it to be used.
 
@@ -65,6 +82,7 @@ public class HPUSBPrinter extends CordovaPlugin implements IJPOSInitCompleteCall
             printer.open("HPEngageOnePrimePrinter"); // HP Engage One Prime White Receipt Printer
             printer.claim(1000);
             printer.setDeviceEnabled(true);
+            callbackContext.success("Success!");
         } catch (JposException e) {
             callbackContext.error(e.getLocalizedMessage().toString());
         }
