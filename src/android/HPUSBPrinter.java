@@ -47,7 +47,7 @@ public class HPUSBPrinter extends CordovaPlugin implements IJPOSInitCompleteCall
         }
         else if ("printLine".equals(action)) {
             // Print the line.
-            print(args.getString(0), callbackContext);
+            println(args.getString(0), callbackContext);
             return true;
         }
         else if ("cut".equals(action)) {
@@ -92,7 +92,18 @@ public class HPUSBPrinter extends CordovaPlugin implements IJPOSInitCompleteCall
     private void print(String msg, CallbackContext callbackContext) {
         // Print
         try {
-            printer.printNormal(POSPrinterConst.PTR_S_RECEIPT, msg);
+            printer.printNormal(POSPrinterConst.PTR_S_RECEIPT, msg + "\n\n");
+            callbackContext.success("Success!");
+        } catch (JposException e) {
+            callbackContext.error(e.getLocalizedMessage().toString());
+        }
+
+    };
+
+    private void println(String msg, CallbackContext callbackContext) {
+        // Print
+        try {
+            printer.printNormal(POSPrinterConst.PTR_S_RECEIPT, "\n\n");
             callbackContext.success("Success!");
         } catch (JposException e) {
             callbackContext.error(e.getLocalizedMessage().toString());
@@ -106,6 +117,7 @@ public class HPUSBPrinter extends CordovaPlugin implements IJPOSInitCompleteCall
         int alignment = POSPrinterConst.PTR_BM_CENTER;
         try {
             printer.printBitmap(POSPrinterConst.PTR_S_RECEIPT, msg, width, alignment);
+            printer.printNormal(POSPrinterConst.PTR_S_RECEIPT, "\n\n");
             callbackContext.success("Success!");
         } catch (JposException e) {
             callbackContext.error(e.getLocalizedMessage().toString());
