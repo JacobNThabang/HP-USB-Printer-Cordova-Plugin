@@ -22,6 +22,8 @@
         </config-file>
 
         <source-file src="src/android/HPUSBPrinter.java" target-dir="src/com/jacob/cordova-hp-usb-printer" />
+        <source-file src="src/android/BitmapConvertor.java" target-dir="src/com/jacob/cordova-hp-usb-printer" />
+        <source-file src="src/android/BMPFile.java" target-dir="src/com/jacob/cordova-hp-usb-printer" />
         <lib-file src="src/libs/jpos.jar" arch="device" />
     </platform>
 </plugin>

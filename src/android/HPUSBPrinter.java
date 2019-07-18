@@ -10,10 +10,12 @@ import jpos.POSPrinter;
 import jpos.POSPrinterConst;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Base64;
 import java.io.File;
 import java.io.IOException;
 
+import com.jacob.BitmapConvertor;
 import com.hp.android.possdk.IJPOSInitCompleteCallBack;
 import com.sunmi.utils.BitmapUtils;
 
@@ -50,11 +52,6 @@ public class HPUSBPrinter extends CordovaPlugin implements IJPOSInitCompleteCall
         else if ("printBMP".equals(action)) {
             // Print the image.
             printImage(args.getString(0), callbackContext);
-            return true;
-        }
-        else if ("printBarcodeQR".equals(action)) {
-            // Print the image.
-            printBarcode(args.getString(0), callbackContext);
             return true;
         }
         else if ("printLine".equals(action)) {
@@ -105,7 +102,7 @@ public class HPUSBPrinter extends CordovaPlugin implements IJPOSInitCompleteCall
     private void print(String msg, CallbackContext callbackContext) {
         // Print
         try {
-            printer.printNormal(POSPrinterConst.PTR_S_RECEIPT, "\r" + msg + "\n");
+            printer.printNormal(POSPrinterConst.PTR_S_RECEIPT, msg + "\n");
             callbackContext.success("print: Success!");
         } catch (JposException e) {
             callbackContext.error("print: " + e.getLocalizedMessage().toString());
@@ -116,7 +113,7 @@ public class HPUSBPrinter extends CordovaPlugin implements IJPOSInitCompleteCall
     private void println(String msg, CallbackContext callbackContext) {
         // PrintLine
         try {
-            printer.printNormal(POSPrinterConst.PTR_S_RECEIPT, "\n\n");
+            printer.printNormal(POSPrinterConst.PTR_S_RECEIPT, "\n");
             callbackContext.success("println: Success!");
         } catch (JposException e) {
             callbackContext.error("println: " + e.getLocalizedMessage().toString());
@@ -124,39 +121,36 @@ public class HPUSBPrinter extends CordovaPlugin implements IJPOSInitCompleteCall
 
     };
 
+    private byte[] convertBitmap2BmpBytes(Bitmap bitmap) {
+
+        byte[] dataBytes;
+
+        BitmapConvertor convertor = new BitmapConvertor();
+
+        dataBytes  = convertor.convertBitmapToBuffer(bitmap);
+
+        return dataBytes;
+
+    }
+
     private void printImage(String msg, CallbackContext callbackContext){
         // Print
 
         int width = POSPrinterConst.PTR_BM_ASIS;
         int alignment = POSPrinterConst.PTR_BM_CENTER;
 
-        final byte[] decodedBytes = Base64.decode(msg, Base64.DEFAULT);
-        //Bitmap decodedBitmap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
-
 
         try {
-            printer.printMemoryBitmap(POSPrinterConst.PTR_S_RECEIPT, decodedBytes, POSPrinterConst.PTR_BMT_BMP, width, alignment);
+            byte[] decodedString = Base64.decode(msg, Base64.DEFAULT);
+            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+
+
+
+            byte[] dataBytes = convertBitmap2BmpBytes(decodedByte);
+
             printer.printNormal(POSPrinterConst.PTR_S_RECEIPT, "\n");
+            printer.printMemoryBitmap(POSPrinterConst.PTR_S_RECEIPT, dataBytes, POSPrinterConst.PTR_BMT_BMP, width, alignment);
             callbackContext.success("Printing Image Success! "  + msg);
-        } catch (JposException e) {
-            callbackContext.error(e.getLocalizedMessage().toString());
-        }
-
-    };
-
-    private void printBarcode(String msg, CallbackContext callbackContext) {
-        // Print the barcode
-        // Data and Settings
-        int symbology = POSPrinterConst.PTR_BCS_QRCODE;
-        int height = 150;
-        int width = 150;
-        int alignment = POSPrinterConst.PTR_BC_CENTER;
-        int textPosition = POSPrinterConst.PTR_BC_TEXT_NONE;
-
-        try {
-            printer.printBarCode(POSPrinterConst.PTR_S_RECEIPT, msg, symbology, height, width, alignment, textPosition);
-            printer.printNormal(POSPrinterConst.PTR_S_RECEIPT, "\n");
-            callbackContext.success("printBarcode: Success!");
         } catch (JposException e) {
             callbackContext.error(e.getLocalizedMessage().toString());
         }

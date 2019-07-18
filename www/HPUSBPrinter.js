@@ -21,7 +21,7 @@ var USBPrinter = {
     },
 
     // Print Image.
-    printBitmap: function (msg, successCallback, errorCallback) {
+    printBitmapImage: function (msg, successCallback, errorCallback) {
         console.log('HPUSBPrinter printBitmap method invoked');
         exec(successCallback, errorCallback, "HPUSBPrinter", "printBMP", [msg]);
     },
