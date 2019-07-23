@@ -61,7 +61,7 @@ public class HPUSBPrinter extends CordovaPlugin implements IJPOSInitCompleteCall
         }
         else if ("cut".equals(action)) {
             // Cut paper.
-            cut(args.getString(0), callbackContext);
+            cut(callbackContext);
             return true;
         }
         else if ("disconnect".equals(action)) {
@@ -164,20 +164,19 @@ public class HPUSBPrinter extends CordovaPlugin implements IJPOSInitCompleteCall
             printer.printMemoryBitmap(POSPrinterConst.PTR_S_RECEIPT, dataBytes, POSPrinterConst.PTR_BMT_BMP, width, alignment);
             callbackContext.success("Printing Image Success! "  + msg);
         } catch (JposException e) {
-            callbackContext.error(e.getLocalizedMessage().toString());
+            callbackContext.error("Printing Image: " + e.getLocalizedMessage().toString());
         }
 
     };
 
-    private void cut(String msg, CallbackContext callbackContext) {
-        // Feed 6-lines(msg) before cutting paper.
+    private void cut(CallbackContext callbackContext) {
+        // Cut paper, call println first.
 
         try {
-            printer.printNormal(POSPrinterConst.PTR_S_RECEIPT, msg);
             printer.cutPaper(100);
-            callbackContext.success("Success!");
+            callbackContext.success("cut: Success!");
         } catch (JposException e) {
-            callbackContext.error(e.getLocalizedMessage().toString());
+            callbackContext.error("cut: " + e.getLocalizedMessage().toString());
         }
 
     };
@@ -189,9 +188,9 @@ public class HPUSBPrinter extends CordovaPlugin implements IJPOSInitCompleteCall
             printer.setDeviceEnabled(false);
             printer.release();
             printer.close();
-            callbackContext.success("Success!");
+            callbackContext.success("disconnect: Success!");
         } catch (JposException e) {
-            callbackContext.error(e.getLocalizedMessage().toString());
+            callbackContext.error("disconnect: " + e.getLocalizedMessage().toString());
         }
 
     };
